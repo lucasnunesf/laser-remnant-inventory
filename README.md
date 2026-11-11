@@ -13,11 +13,36 @@ A Power BI dashboard that tracks sheet metal remnants, the offcuts left on the s
 |---|---|
 | **Result** | After a remnant control process (ID, rack address, 120-day rule), the reuse rate goes from 20.5% to 74.1%, remnants are reused in 28 days instead of 65, and the value lost to scrap drops from BRL 105k in 10 months to BRL 22k in 8. |
 | **My role** | I worked with BI at AC Metais, a Brazilian laser cutting and metal fabrication company. This repository rebuilds a remnant control use case from that shop with synthetic data: data generator, data model, DAX, report pages, tests. |
-| **What's here** | A Power BI project (`.pbip`) written by Python: 5 tables, 15 DAX measures, 2 pages, 24 visuals. A data generator, a pandas check of the numbers, 20 automated tests, CI on every commit. |
+| **What's here** | A Power BI project (`.pbip`) written by Python and published to the Power BI Service: 5 tables, 15 DAX measures, 2 pages, 24 visuals. A data generator, a pandas check of the numbers, 20 automated tests, CI on every commit. |
 | **Skills** | Power BI, DAX, Power Query (M), star schema, role-playing dates (`USERELATIONSHIP`), inventory aging, TMDL / PBIR, Python (pandas), pytest, GitHub Actions |
 | **Full case** | [docs/case-study.md](docs/case-study.md) |
 
 All data is synthetic. Nothing here comes from the company.
+
+---
+
+## The dashboard
+
+Recorded in the Power BI Service after publishing the project. Slicers and cross-filtering work on both pages.
+
+**Stock today.** What is on the racks, how old it is and where it is. Clicking a material or an age bucket filters the rest of the page, and the table lists the pieces to use next, oldest first.
+
+![Stock today page in use](docs/demo-stock-today.gif)
+
+**Reuse vs scrap.** What happened to the remnants cut each month, and how much material leaves as reuse or as scrap. Clicking a month or a material shows its own reuse rate and loss.
+
+![Reuse vs scrap page in use](docs/demo-reuse-vs-scrap.gif)
+
+<details>
+<summary><b>Full-size screenshots</b></summary>
+
+![Stock today](docs/page-stock-today.png)
+
+![Reuse vs scrap](docs/page-reuse-vs-scrap.png)
+
+</details>
+
+The 42.9% reuse rate on the second page covers all 18 months. Split by period, it is 20.5% before the control process and 74.1% after.
 
 ---
 
