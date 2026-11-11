@@ -3,3 +3,8 @@ __pycache__/
 json-schemas/
 .DS_Store
 ~$*.xlsx
+
+# Power BI Desktop local files
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+.pytest_cache/
