@@ -1,0 +1,20 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -r requirements.txt
+      - name: Get Microsoft's Power BI JSON schemas
+        run: git clone --depth 1 --filter=blob:none --sparse https://github.com/microsoft/json-schemas.git && git -C json-schemas sparse-checkout set fabric
+      - name: Run tests
+        run: pytest -v
