@@ -33,7 +33,8 @@ def test_every_reference_exists():
 def test_checker_catches_a_broken_visual(tmp_path):
     copy = tmp_path / "powerbi"
     shutil.copytree(ROOT / "powerbi", copy)
-    visual = next(copy.glob(f"{NAME}.Report/definition/pages/*/visuals/*/visual.json"))
+    visual = next(v for v in sorted(copy.glob(f"{NAME}.Report/definition/pages/*/visuals/*/visual.json"))
+                  if '"Property": "' in v.read_text(encoding="utf-8"))
     text = visual.read_text(encoding="utf-8").replace('"Property": "', '"Property": "Missing ', 1)
     visual.write_text(text, encoding="utf-8")
     assert any("not in model" in p for p in problems(copy, NAME))
