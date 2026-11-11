@@ -1,0 +1,78 @@
+table dCalendar
+	lineageTag: 807d040c-b878-5649-b49e-f768936bb4f1
+	dataCategory: Time
+
+	column date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		isKey
+		lineageTag: 642b5411-bafc-5cba-9df8-778f46ad8aaa
+		summarizeBy: none
+		sourceColumn: date
+
+		annotation SummarizationSetBy = Automatic
+
+	column year
+		dataType: int64
+		formatString: 0
+		lineageTag: 1d5afea5-c6d0-53a9-b7f2-19d44b4ecf7d
+		summarizeBy: none
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_number
+		dataType: int64
+		formatString: 0
+		lineageTag: 9250d28b-60e2-5371-84a9-a20cce0d299d
+		summarizeBy: none
+		sourceColumn: month_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column year_month_number
+		dataType: int64
+		formatString: 0
+		lineageTag: 4306f524-ac58-5dc3-b6e5-ca2771ca1c5a
+		summarizeBy: none
+		sourceColumn: year_month_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_label
+		dataType: string
+		lineageTag: 6f5bc649-7fc1-54b3-98aa-ba889e73ba22
+		summarizeBy: none
+		sourceColumn: month_label
+		sortByColumn: year_month_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column quarter
+		dataType: string
+		lineageTag: 5ae45c65-301a-5f7a-8d81-d83b3cf7964a
+		summarizeBy: none
+		sourceColumn: quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column period
+		dataType: string
+		lineageTag: 6d029b6a-cfb8-5d26-8501-e4554261d492
+		summarizeBy: none
+		sourceColumn: period
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dCalendar = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents(DataFolder & "remnant_inventory.xlsx"), null, true),
+				    Sheet = Source{[Item="dCalendar",Kind="Sheet"]}[Data],
+				    Promoted = Table.PromoteHeaders(Sheet, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"date", type date}, {"year", Int64.Type}, {"month_number", Int64.Type}, {"year_month_number", Int64.Type}, {"month_label", type text}, {"quarter", type text}, {"period", type text}})
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table

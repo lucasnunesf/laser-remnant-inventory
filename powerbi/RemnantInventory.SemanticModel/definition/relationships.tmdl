@@ -1,0 +1,22 @@
+relationship 0c70db0e-84df-5233-b54c-e73b7291632b
+	fromColumn: fRemnants.material_id
+	toColumn: dMaterial.material_id
+
+relationship 0a5df439-6cfa-5bd4-ba1f-78b1f20f26bc
+	fromColumn: fRemnants.machine_id
+	toColumn: dMachine.machine_id
+
+relationship 810caf00-8922-5630-996a-7bd007f2cce2
+	fromColumn: fRemnants.location_id
+	toColumn: dLocation.location_id
+
+relationship b5fad962-4692-58c5-8cc9-223872a0e9ff
+	joinOnDateBehavior: datePartOnly
+	fromColumn: fRemnants.generated_date
+	toColumn: dCalendar.date
+
+relationship bac20214-83ed-5e96-a877-0245a64a7634
+	isActive: false
+	joinOnDateBehavior: datePartOnly
+	fromColumn: fRemnants.disposal_date
+	toColumn: dCalendar.date

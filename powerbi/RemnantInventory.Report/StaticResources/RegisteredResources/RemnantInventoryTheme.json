@@ -1,0 +1,52 @@
+{
+  "name": "Remnant Inventory",
+  "dataColors": [
+    "#E8692C",
+    "#1F2A36",
+    "#2A9D8F",
+    "#C8553D",
+    "#8D99AE",
+    "#F4B183",
+    "#3D5A80",
+    "#98C1D9"
+  ],
+  "background": "#FFFFFF",
+  "foreground": "#1F2A36",
+  "tableAccent": "#E8692C",
+  "good": "#2A9D8F",
+  "bad": "#C8553D",
+  "neutral": "#8D99AE",
+  "textClasses": {
+    "label": {
+      "fontFace": "Segoe UI",
+      "fontSize": 10,
+      "color": "#3A4452"
+    },
+    "title": {
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 12,
+      "color": "#1F2A36"
+    },
+    "callout": {
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 26,
+      "color": "#1F2A36"
+    }
+  },
+  "visualStyles": {
+    "page": {
+      "*": {
+        "background": [
+          {
+            "color": {
+              "solid": {
+                "color": "#F3F4F6"
+              }
+            },
+            "transparency": 0
+          }
+        ]
+      }
+    }
+  }
+}

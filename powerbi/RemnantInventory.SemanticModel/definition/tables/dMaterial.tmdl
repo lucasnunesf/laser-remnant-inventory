@@ -1,0 +1,75 @@
+table dMaterial
+	lineageTag: e37c7108-7b28-537f-a25c-3c061f1f18bc
+
+	column material_id
+		dataType: string
+		lineageTag: b374f20f-576f-5c9c-8e43-4042f4703f18
+		summarizeBy: none
+		sourceColumn: material_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column material
+		dataType: string
+		lineageTag: 5f6fc487-f52b-50ae-bf13-e66a2ef3c08e
+		summarizeBy: none
+		sourceColumn: material
+
+		annotation SummarizationSetBy = Automatic
+
+	column thickness_mm
+		dataType: double
+		formatString: 0.00
+		lineageTag: f84ea470-fe3f-538a-9cab-a50baed00a5f
+		summarizeBy: none
+		sourceColumn: thickness_mm
+
+		annotation SummarizationSetBy = Automatic
+
+	column material_description
+		dataType: string
+		lineageTag: a5ccee21-505a-5f3a-8337-2b3ca7010300
+		summarizeBy: none
+		sourceColumn: material_description
+
+		annotation SummarizationSetBy = Automatic
+
+	column density_kg_m3
+		dataType: int64
+		formatString: 0
+		lineageTag: e06c086f-dd86-521c-b370-19ae665e25fa
+		summarizeBy: none
+		sourceColumn: density_kg_m3
+
+		annotation SummarizationSetBy = Automatic
+
+	column cost_brl_kg
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 616fecb3-a613-5f54-9893-532ea6b7cafb
+		summarizeBy: none
+		sourceColumn: cost_brl_kg
+
+		annotation SummarizationSetBy = Automatic
+
+	column scrap_price_brl_kg
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 4b4dc599-c638-5a26-bf7a-859fd47f68f5
+		summarizeBy: none
+		sourceColumn: scrap_price_brl_kg
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dMaterial = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents(DataFolder & "remnant_inventory.xlsx"), null, true),
+				    Sheet = Source{[Item="dMaterial",Kind="Sheet"]}[Data],
+				    Promoted = Table.PromoteHeaders(Sheet, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"material_id", type text}, {"material", type text}, {"thickness_mm", type number}, {"material_description", type text}, {"density_kg_m3", Int64.Type}, {"cost_brl_kg", type number}, {"scrap_price_brl_kg", type number}})
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table

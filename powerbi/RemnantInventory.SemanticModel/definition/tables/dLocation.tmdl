@@ -1,0 +1,57 @@
+table dLocation
+	lineageTag: cea7fcc3-5362-5803-a0a9-518491ef8315
+
+	column location_id
+		dataType: string
+		lineageTag: 83696d4c-48be-5894-8d71-c7ebfcbdfac1
+		summarizeBy: none
+		sourceColumn: location_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column area
+		dataType: string
+		lineageTag: ea268063-e972-5769-babf-21e1fb314e44
+		summarizeBy: none
+		sourceColumn: area
+
+		annotation SummarizationSetBy = Automatic
+
+	column aisle
+		dataType: string
+		lineageTag: d6e9bab1-3a89-5c6b-bdc2-5569eb704426
+		summarizeBy: none
+		sourceColumn: aisle
+
+		annotation SummarizationSetBy = Automatic
+
+	column level
+		dataType: int64
+		formatString: 0
+		lineageTag: ced4b43e-58bd-5742-a7b8-ee6a249254a7
+		summarizeBy: none
+		sourceColumn: level
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_addressed
+		dataType: int64
+		formatString: 0
+		lineageTag: e7392a19-f6a1-5f43-b437-abcc7ae0c331
+		summarizeBy: none
+		sourceColumn: is_addressed
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dLocation = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents(DataFolder & "remnant_inventory.xlsx"), null, true),
+				    Sheet = Source{[Item="dLocation",Kind="Sheet"]}[Data],
+				    Promoted = Table.PromoteHeaders(Sheet, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"location_id", type text}, {"area", type text}, {"aisle", type text}, {"level", Int64.Type}, {"is_addressed", Int64.Type}})
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table

@@ -1,0 +1,39 @@
+table dMachine
+	lineageTag: c14d702f-980f-5fda-9d52-476e21b62d7f
+
+	column machine_id
+		dataType: string
+		lineageTag: b88d32cb-9b30-5c12-aab5-58f40a7e7153
+		summarizeBy: none
+		sourceColumn: machine_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column machine
+		dataType: string
+		lineageTag: c1422037-7463-5482-bea1-627fc0444dbe
+		summarizeBy: none
+		sourceColumn: machine
+
+		annotation SummarizationSetBy = Automatic
+
+	column bed_size
+		dataType: string
+		lineageTag: 5c84d322-971c-57ae-9845-69c102b22906
+		summarizeBy: none
+		sourceColumn: bed_size
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dMachine = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents(DataFolder & "remnant_inventory.xlsx"), null, true),
+				    Sheet = Source{[Item="dMachine",Kind="Sheet"]}[Data],
+				    Promoted = Table.PromoteHeaders(Sheet, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"machine_id", type text}, {"machine", type text}, {"bed_size", type text}})
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table

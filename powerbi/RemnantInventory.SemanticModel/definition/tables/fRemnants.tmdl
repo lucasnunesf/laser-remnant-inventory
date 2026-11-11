@@ -1,0 +1,271 @@
+table fRemnants
+	lineageTag: 187810e8-5908-5b8c-81b2-04206a898071
+
+	measure 'Remnants Generated' = COUNTROWS ( fRemnants )
+		formatString: #,0
+		displayFolder: 1 Volume
+		lineageTag: b5e0d3e9-c40e-50f5-8fb7-7a53da5ef42d
+
+	measure 'Remnants in Stock' = CALCULATE ( COUNTROWS ( fRemnants ), fRemnants[status] = "Available" )
+		formatString: #,0
+		displayFolder: 2 Stock
+		lineageTag: 291f6a16-ac22-50cd-8ed2-ec8dd975f5b0
+
+	measure 'Stock Area (m²)' = CALCULATE ( SUM ( fRemnants[area_m2] ), fRemnants[status] = "Available" )
+		formatString: #,0.0
+		displayFolder: 2 Stock
+		lineageTag: 60cc70a7-62d6-5aa0-9e9c-688e4e9cc680
+
+	measure 'Stock Weight (kg)' = CALCULATE ( SUM ( fRemnants[weight_kg] ), fRemnants[status] = "Available" )
+		formatString: #,0
+		displayFolder: 2 Stock
+		lineageTag: 5363c0a0-e56b-5f89-b4dc-a6758a858ecb
+
+	measure 'Stock Value (BRL)' = CALCULATE ( SUM ( fRemnants[value_brl] ), fRemnants[status] = "Available" )
+		formatString: #,0
+		displayFolder: 2 Stock
+		lineageTag: 5272da2b-9a6a-5148-8c66-fbe7b198de7e
+
+	measure 'Avg Stock Age (days)' = CALCULATE ( AVERAGE ( fRemnants[age_days] ), fRemnants[status] = "Available" )
+		formatString: #,0
+		displayFolder: 2 Stock
+		lineageTag: 960fa1ca-b3f0-5197-b7b1-cfc419b56bb0
+
+	measure 'Stock on Floor %' =
+			DIVIDE (
+			    CALCULATE ( [Remnants in Stock], dLocation[is_addressed] = 0 ),
+			    [Remnants in Stock]
+			)
+		formatString: 0.0%
+		displayFolder: 2 Stock
+		lineageTag: 1599b1b7-2b4c-575d-8636-375c197711f6
+
+	measure 'Reused Count' = CALCULATE ( COUNTROWS ( fRemnants ), fRemnants[status] = "Reused" )
+		formatString: #,0
+		displayFolder: 3 Outcome
+		lineageTag: ea4ed6b3-89a4-557f-967f-1472450d15dc
+
+	measure 'Scrapped Count' = CALCULATE ( COUNTROWS ( fRemnants ), fRemnants[status] = "Scrapped" )
+		formatString: #,0
+		displayFolder: 3 Outcome
+		lineageTag: fe53e6b2-2f19-5fee-8163-2eb25d25f617
+
+	measure 'Reuse Rate %' =
+			-- share of remnants that already left the stock and were reused (not scrapped)
+			DIVIDE ( [Reused Count], [Reused Count] + [Scrapped Count] )
+		formatString: 0.0%
+		displayFolder: 3 Outcome
+		lineageTag: 27ca3428-ab4e-5c53-b158-7e9cdcc0bf55
+
+	measure 'Avg Days to Reuse' = CALCULATE ( AVERAGE ( fRemnants[age_days] ), fRemnants[status] = "Reused" )
+		formatString: #,0
+		displayFolder: 3 Outcome
+		lineageTag: 3c78dddd-5bc9-5caf-8b61-c3c6fe592271
+
+	measure 'Scrapped Weight (kg)' = CALCULATE ( SUM ( fRemnants[weight_kg] ), fRemnants[status] = "Scrapped" )
+		formatString: #,0
+		displayFolder: 3 Outcome
+		lineageTag: 745d9ff1-56ab-5635-b3db-e624607e9c94
+
+	measure 'Value Lost to Scrap (BRL)' =
+			-- material cost of scrapped remnants minus what the scrap buyer pays
+			SUMX (
+			    FILTER ( fRemnants, fRemnants[status] = "Scrapped" ),
+			    fRemnants[value_brl] - fRemnants[weight_kg] * RELATED ( dMaterial[scrap_price_brl_kg] )
+			)
+		formatString: #,0
+		displayFolder: 3 Outcome
+		lineageTag: 716e8e0a-cd61-55fd-9a9c-308bf381f281
+
+	measure 'Scrapped Weight by Disposal Date (kg)' =
+			-- uses the inactive relationship to look at WHEN remnants were scrapped
+			CALCULATE (
+			    [Scrapped Weight (kg)],
+			    USERELATIONSHIP ( fRemnants[disposal_date], dCalendar[date] )
+			)
+		formatString: #,0
+		displayFolder: 4 By disposal date
+		lineageTag: 9e9db911-2028-5709-b929-d75bfde4d66f
+
+	measure 'Reused Weight by Disposal Date (kg)' =
+			CALCULATE (
+			    CALCULATE ( SUM ( fRemnants[weight_kg] ), fRemnants[status] = "Reused" ),
+			    USERELATIONSHIP ( fRemnants[disposal_date], dCalendar[date] )
+			)
+		formatString: #,0
+		displayFolder: 4 By disposal date
+		lineageTag: fbf718fb-9ec9-5e20-8bf7-9e42c85c35d0
+
+	column remnant_id
+		dataType: string
+		lineageTag: b103ae08-e57f-5f04-8212-3c00d638133c
+		summarizeBy: none
+		sourceColumn: remnant_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column generated_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 4540e0ac-5ff1-538d-a021-e603c10e1de2
+		summarizeBy: none
+		sourceColumn: generated_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column source_job
+		dataType: string
+		lineageTag: 3d7c3089-f8d0-5ef1-b5eb-aa2f4d18cfc2
+		summarizeBy: none
+		sourceColumn: source_job
+
+		annotation SummarizationSetBy = Automatic
+
+	column machine_id
+		dataType: string
+		lineageTag: 0d037b1d-ad94-56de-ab48-7a69d679e53e
+		summarizeBy: none
+		sourceColumn: machine_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column material_id
+		dataType: string
+		lineageTag: acb83d35-18be-55dc-9c79-e6b5291f69cc
+		summarizeBy: none
+		sourceColumn: material_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column width_mm
+		dataType: int64
+		formatString: 0
+		lineageTag: 2f09dffe-2faa-5367-9d00-71fb04ca3591
+		summarizeBy: none
+		sourceColumn: width_mm
+
+		annotation SummarizationSetBy = Automatic
+
+	column length_mm
+		dataType: int64
+		formatString: 0
+		lineageTag: 359c3cca-4954-59b9-9c56-5ba0ebdd775a
+		summarizeBy: none
+		sourceColumn: length_mm
+
+		annotation SummarizationSetBy = Automatic
+
+	column area_m2
+		dataType: double
+		formatString: #,0.000
+		lineageTag: dfe5917b-306c-55e1-90f7-1702ce5a5fa1
+		summarizeBy: sum
+		sourceColumn: area_m2
+
+		annotation SummarizationSetBy = Automatic
+
+	column weight_kg
+		dataType: double
+		formatString: #,0.0
+		lineageTag: 542097d2-b553-5d05-95a9-d5c967e6229b
+		summarizeBy: sum
+		sourceColumn: weight_kg
+
+		annotation SummarizationSetBy = Automatic
+
+	column value_brl
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 6f800db1-5553-5f81-a11f-6780c60a69a0
+		summarizeBy: sum
+		sourceColumn: value_brl
+
+		annotation SummarizationSetBy = Automatic
+
+	column location_id
+		dataType: string
+		lineageTag: 4129713f-9479-56fe-9054-588c667b7dd0
+		summarizeBy: none
+		sourceColumn: location_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column status
+		dataType: string
+		lineageTag: 4879ee3e-c0bd-5a40-8aa0-959786613355
+		summarizeBy: none
+		sourceColumn: status
+
+		annotation SummarizationSetBy = Automatic
+
+	column disposal_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 38b8ccfd-7c74-5fbc-b739-a76d77fb62ee
+		summarizeBy: none
+		sourceColumn: disposal_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column reuse_job
+		dataType: string
+		lineageTag: b657eb3e-3c22-5c64-b2a3-9fc866302969
+		summarizeBy: none
+		sourceColumn: reuse_job
+
+		annotation SummarizationSetBy = Automatic
+
+	column age_days =
+			-- days in stock until today (available) or until it left (reused / scrapped)
+			VAR snapshot = MAX ( dCalendar[date] )
+			VAR end_date = IF ( fRemnants[status] = "Available", snapshot, fRemnants[disposal_date] )
+			RETURN INT ( end_date - fRemnants[generated_date] )
+		dataType: int64
+		formatString: 0
+		lineageTag: 72918589-0751-570a-9288-1931f382ca00
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column age_bucket =
+			SWITCH (
+			    TRUE (),
+			    fRemnants[age_days] <= 30, "0-30 days",
+			    fRemnants[age_days] <= 90, "31-90 days",
+			    fRemnants[age_days] <= 180, "91-180 days",
+			    "180+ days"
+			)
+		dataType: string
+		lineageTag: 309f90ff-6e3e-5a46-82f5-a4eda36324ac
+		summarizeBy: none
+		sortByColumn: age_bucket_order
+
+		annotation SummarizationSetBy = Automatic
+
+	column age_bucket_order =
+			SWITCH (
+			    TRUE (),
+			    fRemnants[age_days] <= 30, 1,
+			    fRemnants[age_days] <= 90, 2,
+			    fRemnants[age_days] <= 180, 3,
+			    4
+			)
+		dataType: int64
+		formatString: 0
+		lineageTag: 03e0920d-1be7-5c11-82fb-c4199e145a74
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fRemnants = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents(DataFolder & "remnant_inventory.xlsx"), null, true),
+				    Sheet = Source{[Item="fRemnants",Kind="Sheet"]}[Data],
+				    Promoted = Table.PromoteHeaders(Sheet, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"remnant_id", type text}, {"generated_date", type date}, {"source_job", type text}, {"machine_id", type text}, {"material_id", type text}, {"width_mm", Int64.Type}, {"length_mm", Int64.Type}, {"area_m2", type number}, {"weight_kg", type number}, {"value_brl", type number}, {"location_id", type text}, {"status", type text}, {"disposal_date", type date}, {"reuse_job", type text}})
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
