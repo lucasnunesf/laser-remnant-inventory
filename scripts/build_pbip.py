@@ -339,6 +339,36 @@ def proj(field, active=False):
     return p
 
 
+# Table headers: readable names instead of column names like week_label
+COLUMN_LABELS = {
+    "week_label": "Week", "material_description": "Material", "remnant_id": "Remnant",
+    "operation_id": "Operation", "location_id": "Location", "generated_date": "Cut on",
+    "supplier_type": "Type", "promised_lead_time_days": "Lead time (days)",
+}
+UNIT_SUFFIXES = {"_mm": " (mm)", "_m2": " (m²)", "_brl": " (BRL)", "_days": " (days)",
+                 "_kg": " (kg)", "_hours": " (h)"}
+
+
+def column_label(prop):
+    if prop in COLUMN_LABELS:
+        return COLUMN_LABELS[prop]
+    unit = next((u for s, u in UNIT_SUFFIXES.items() if prop.endswith(s)), "")
+    base = prop[: -len(next(s for s in UNIT_SUFFIXES if prop.endswith(s)))] if unit else prop
+    return base.replace("_", " ").capitalize() + unit
+
+
+def table_projection(field):
+    p = proj(field)
+    if "Column" in field:
+        p["displayName"] = column_label(field["Column"]["Property"])
+    return p
+
+
+# Room for long category names on bar charts ("Welding / boilermaking"):
+# the axis may take up to 45% of the visual width instead of the default 25%.
+WIDE_CATEGORY_AXIS = [{"properties": {"maxMarginFactor": {"expr": {"Literal": {"Value": "45L"}}}}}]
+
+
 def container_objects(title=None, background=True):
     o = {}
     if title:
@@ -430,6 +460,8 @@ def chart(vtype, category, values, title, sort=None, sort_dir="Descending", colo
              "selector": {"metadata": proj(m)["queryRef"]}} for m, c in series_colors]
     if len(vals) > 1:
         objects["legend"] = [{"properties": {"show": lit(True), "position": lit("Top")}}]
+    if vtype == "clusteredBarChart":
+        objects["categoryAxis"] = WIDE_CATEGORY_AXIS
     objects["valueAxis"] = [{"properties": {"show": lit(False)}}] if vtype.endswith("BarChart") else \
         [{"properties": {"gridlineShow": lit(False)}}]
     return {"visualType": vtype, "query": q, "objects": objects,
@@ -437,7 +469,7 @@ def chart(vtype, category, values, title, sort=None, sort_dir="Descending", colo
 
 
 def table(columns, title, sort=None):
-    q = {"queryState": {"Values": {"projections": [proj(c) for c in columns]}}}
+    q = {"queryState": {"Values": {"projections": [table_projection(c) for c in columns]}}}
     if sort is not None:
         q["sortDefinition"] = {"sort": [{"field": sort, "direction": "Descending"}], "isDefaultSort": True}
     return {"visualType": "tableEx", "query": q,
@@ -468,7 +500,7 @@ def title_band(page, title, question):
         [(title, {"fontWeight": "bold", "fontSize": "20pt", "color": "#FFFFFF"})],
         [(question, {"fontSize": "11pt", "color": "#F4B183"})],
     ], fill=GRAPHITE))
-    page.add("footer", 900, 696, 372, 22, textbox([
+    page.add("footer", 900, 688, 372, 32, textbox([
         [("AC Metais · synthetic data · snapshot 31 Oct 2026",
           {"fontSize": "8pt", "color": "#7A8494"})]]))
 

@@ -69,3 +69,40 @@ def test_report_matches_microsoft_schemas():
                          cwd=ROOT, capture_output=True, text=True)
     assert out.returncode == 0, out.stdout + out.stderr
     assert "0 schema errors" in out.stdout
+
+
+# --------------------------------------------------------------------------
+# What a reader sees in the report: no technical names, no cut labels or text
+# --------------------------------------------------------------------------
+
+def _visuals():
+    for f in (ROOT / "powerbi" / f"{NAME}.Report" / "definition" / "pages").glob("*/visuals/*/visual.json"):
+        yield f, json.loads(f.read_text(encoding="utf-8"))
+
+
+def test_table_headers_use_readable_names():
+    for f, v in _visuals():
+        if v["visual"]["visualType"] != "tableEx":
+            continue
+        for p in v["visual"]["query"]["queryState"]["Values"]["projections"]:
+            if "Column" in p["field"]:
+                label = p.get("displayName", p["field"]["Column"]["Property"])
+                assert "_" not in label, f"{f.parent.name}: header '{label}'"
+
+
+def test_bar_charts_leave_room_for_category_labels():
+    for f, v in _visuals():
+        if v["visual"]["visualType"] != "clusteredBarChart":
+            continue
+        axis = v["visual"]["objects"].get("categoryAxis", [{}])[0].get("properties", {})
+        margin = axis.get("maxMarginFactor", {}).get("expr", {}).get("Literal", {}).get("Value", "25L")
+        assert int(margin.rstrip("LD")) >= 40, f"{f.parent.name}: labels cut at {margin}"
+
+
+def test_footer_text_is_not_cut():
+    for f, v in _visuals():
+        pos = v["position"]
+        assert pos["y"] + pos["height"] <= 720, f"{f.parent.name} goes past the page"
+        texts = json.dumps(v["visual"].get("objects", {}))
+        if "AC Metais" in texts and pos["y"] > 600:
+            assert pos["height"] >= 30, f"{f.parent.name}: footer box {pos['height']}px tall"

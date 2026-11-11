@@ -27,7 +27,8 @@
                 }
               },
               "queryRef": "dMaterial.material_description",
-              "nativeQueryRef": "material_description"
+              "nativeQueryRef": "material_description",
+              "displayName": "Material"
             },
             {
               "field": {

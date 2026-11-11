@@ -27,7 +27,8 @@
                 }
               },
               "queryRef": "fRemnants.remnant_id",
-              "nativeQueryRef": "remnant_id"
+              "nativeQueryRef": "remnant_id",
+              "displayName": "Remnant"
             },
             {
               "field": {
@@ -41,7 +42,8 @@
                 }
               },
               "queryRef": "dMaterial.material_description",
-              "nativeQueryRef": "material_description"
+              "nativeQueryRef": "material_description",
+              "displayName": "Material"
             },
             {
               "field": {
@@ -55,7 +57,8 @@
                 }
               },
               "queryRef": "fRemnants.width_mm",
-              "nativeQueryRef": "width_mm"
+              "nativeQueryRef": "width_mm",
+              "displayName": "Width (mm)"
             },
             {
               "field": {
@@ -69,7 +72,8 @@
                 }
               },
               "queryRef": "fRemnants.length_mm",
-              "nativeQueryRef": "length_mm"
+              "nativeQueryRef": "length_mm",
+              "displayName": "Length (mm)"
             },
             {
               "field": {
@@ -83,7 +87,8 @@
                 }
               },
               "queryRef": "fRemnants.area_m2",
-              "nativeQueryRef": "area_m2"
+              "nativeQueryRef": "area_m2",
+              "displayName": "Area (m²)"
             },
             {
               "field": {
@@ -97,7 +102,8 @@
                 }
               },
               "queryRef": "fRemnants.value_brl",
-              "nativeQueryRef": "value_brl"
+              "nativeQueryRef": "value_brl",
+              "displayName": "Value (BRL)"
             },
             {
               "field": {
@@ -111,7 +117,8 @@
                 }
               },
               "queryRef": "fRemnants.location_id",
-              "nativeQueryRef": "location_id"
+              "nativeQueryRef": "location_id",
+              "displayName": "Location"
             },
             {
               "field": {
@@ -125,7 +132,8 @@
                 }
               },
               "queryRef": "fRemnants.generated_date",
-              "nativeQueryRef": "generated_date"
+              "nativeQueryRef": "generated_date",
+              "displayName": "Cut on"
             },
             {
               "field": {
@@ -139,7 +147,8 @@
                 }
               },
               "queryRef": "fRemnants.age_days",
-              "nativeQueryRef": "age_days"
+              "nativeQueryRef": "age_days",
+              "displayName": "Age (days)"
             }
           ]
         }
