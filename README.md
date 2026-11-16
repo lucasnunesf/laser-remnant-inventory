@@ -215,12 +215,6 @@ docs/                            case study and README images
 
 ---
 
-## Next steps
-
-- Read remnants from the nesting software export instead of the generator.
-- Suggest remnants for new jobs by material, thickness and size.
-- Show the 120-day deadline on the stock page, so planners use a piece before it goes to scrap.
-
 ## How this was built
 
 The problem, the business rules and the design decisions are mine. They come from my BI work at AC Metais. I used an AI coding assistant to write the code faster and reviewed the result.
