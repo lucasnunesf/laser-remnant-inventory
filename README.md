@@ -64,21 +64,17 @@ Stock on 31 Oct 2026: 586 remnants · 197 m² · BRL 63k.
 
 ## Files
 
-```
-data/remnant_inventory.xlsx     synthetic data
-powerbi/RemnantInventory.pbip   the Power BI report
-docs/                           images
-```
+| Folder | What is in it |
+|---|---|
+| `data/` | Synthetic data in Excel |
+| `powerbi/` | The Power BI report |
+| `docs/` | Images |
 
-To open it in Power BI Desktop:
+To open it, open the report in the `powerbi` folder with Power BI Desktop, point the **DataFolder** parameter (*Transform data → Edit parameters*) to the `data` folder and refresh.
 
-1. Open `powerbi/RemnantInventory.pbip`.
-2. *Transform data → Edit parameters →* set **DataFolder** to the full path of the `data` folder, ending with `\`.
-3. *Refresh.*
+## Background
 
-## How this was built
-
-The problem and the business rules come from my BI work at AC Metais. The data is synthetic; nothing comes from the company. I used an AI assistant to help build the report faster and reviewed the result.
+Based on real experience at AC Metais, a Brazilian laser cutting and metal fabrication company. The problem and the business rules are the real ones; the data is synthetic, so nothing comes from the company.
 
 ---
 
